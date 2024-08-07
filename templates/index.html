@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: #ffffff; 
+        }
+
+       
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); 
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: #ffffff; 
+            color: #000000;
+            position: relative;
+        }
+
+
+        .dark-theme .container {
+            background-color: #000000;
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.4); 
+        }
+
+      
+        .light-theme .container {
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); 
+        }
+
+     
+        .title h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .title h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+      
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        form input {
+            font-size: 1rem;
+            padding: 0.75rem;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        form input::placeholder {
+            color: #cccccc;
+        }
+
+        form input:focus {
+            border-color: #6c63ff;
+        }
+
+        form button {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+        }
+
+        form button:hover {
+            transform: translateY(-2px);
+        }
+
+       
+        .generated {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .generated img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .generated p {
+            font-size: 1rem;
+        }
+
+        .generated .download-button {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: #6c63ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+        }
+
+        .generated .download-button:hover {
+            background: #5753d1;
+            transform: translateY(-2px);
+        }
+
+        
+        .theme-toggle-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #666666;
+            border: none;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-theme .theme-toggle-button {
+            background-color: #333333;
+        }
+
+        @media (max-width: 600px) {
+            .theme-toggle-button {
+                top: 0.5rem;
+                right: 0.5rem;
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="container">
+        <button class="theme-toggle-button" onclick="toggleTheme()">🌙</button>
+        <div class="title">
+            <h1>QR Code Generator</h1>
+            <h2>Insert a link below to generate a QR Code</h2>
+        </div>
+        <form action="/" method="post">
+            <input type="text" name="link" placeholder="Enter a link" required />
+            <button type="submit">Generate QR</button>
+        </form>
+        {% if data %}
+        <div class="generated">
+            <img src="{{ data }}" alt="QR Code" />
+            <p>Here is the QR code we generated for you!</p>
+            <button class="download-button" onclick="downloadQRCode()">Download QR Code</button>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
+            if (currentTheme === 'light') {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                document.querySelector('.theme-toggle-button').textContent = '☀️';
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                document.querySelector('.theme-toggle-button').textContent = '🌙';
+            }
+        }
+
+        function downloadQRCode() {
+            const img = document.querySelector('.generated img');
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = 'qrcode.png';
+            link.click();
+        }
+    </script>
+</body>
+</html>
